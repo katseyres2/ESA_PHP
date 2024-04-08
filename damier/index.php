@@ -1,6 +1,6 @@
 <?php
-$rows = 10;
-$columns = 10;
+$rows = 8;
+$columns = 8;
 ?>
 
 <!DOCTYPE html>
