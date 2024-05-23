@@ -17,12 +17,13 @@ function getTodos(): array
 		}
 
 		$todos[] = new Task(
-			$data[0],
+			intval($data[0]),
 			$data[1],
-			DateTime::createFromFormat('Y-m-d H:i:s', $data[2]),
+			$data[2],
+			$data[5] == '1',
 			DateTime::createFromFormat('Y-m-d H:i:s', $data[3]),
+			DateTime::createFromFormat('Y-m-d H:i:s', $data[4]),
 		);
-		break;
 	}
 
 	return $todos;
@@ -34,15 +35,17 @@ function getTodos(): array
 function saveTodos(array $todos): void
 {
 	$stream = fopen('./todos.csv', 'w');
-	$headers = ["Title", "Description", "CreatedAt", "EndDate"];
+	$headers = ["Id", "Title", "Description", "CreatedAt", "EndDate", "Done"];
 	fputcsv($stream, $headers, ";");
 
 	foreach ($todos as $todo) {
 		$row = [
+			$todo->getId(),
 			$todo->getTitle(),
 			$todo->getDescription(),
 			$todo->getCreatedAt()->format('Y-m-d H:i:s'),
 			$todo->getEndDate()->format('Y-m-d H:i:s'),
+			$todo->isDone() ? '1' :  '0'
 		];
 
 		fputcsv($stream, $row, ';');
