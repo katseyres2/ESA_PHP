@@ -48,4 +48,9 @@ class Task
 	{
 		return $this->done;
 	}
+
+	public function setDone(bool $done): void
+	{
+		$this->done = $done;
+	}
 }
