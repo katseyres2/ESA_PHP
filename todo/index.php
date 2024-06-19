@@ -66,10 +66,26 @@ if ($showDeleted) {
 						</div>
 					</div>
 					<div class="row pt-3">
-						<form action="./index.php" method="POST">
-							<input type="hidden" name="filterShowDeletedTasks" value="<?= $showDeleted ? '0' : '1' ?>">
-							<input type="submit" value="<?= $showDeleted ? 'Hide' : 'Show'?> deleted tasks" class="btn btn-primary">
-						</form>
+						<div class="col">
+							<form action="./index.php" method="POST">
+								<input type="hidden" name="filterShowDeletedTasks" value="<?= $showDeleted ? '0' : '1' ?>">
+								<input type="submit" value="<?= $showDeleted ? 'Hide' : 'Show'?> deleted tasks" class="btn btn-primary" <?=count($deletedTodos) == 0 ? 'disabled' : ''?>>
+							</form>
+						</div>
+					</div>
+					<div class="row pt-3">
+						<div class="col">
+							<form action="./clear.php" method="GET">
+								<input type="submit" value="Clear deleted tasks" class="btn btn-primary">
+							</form>
+						</div>
+					</div>
+					<div class="row pt-3 visually-hidden">
+						<div class="col">
+							<form action="./purge.php" method="GET">
+								<input type="submit" value="Purge all tasks" class="btn btn-primary">
+							</form>
+						</div>
 					</div>
 				</div>
 				<div class="col">

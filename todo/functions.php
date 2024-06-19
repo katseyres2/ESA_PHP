@@ -146,3 +146,22 @@ function editTask(int $id, string $title, string $description): void
 
 	saveTodos($todos);
 }
+
+function clearDeletedTasks(): void
+{
+	$todos = getTodos();
+	$newTodos = [];
+
+	foreach ($todos as $task) {
+		if (!$task->isDeleted()) {
+			$newTodos[] = $task;
+		}
+	}
+
+	saveTodos($newTodos);
+}
+
+function purgeAllTasks(): void
+{
+	saveTodos([]);
+}
