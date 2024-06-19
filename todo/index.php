@@ -127,8 +127,8 @@ if ($showDeleted) {
 						<div class="card shadow w-200 h-100 <?=$cardBackground?>">
 							<div class="card-body">
 								<h5>
-									<label class="card-title mb-0 pb-0" for="<?= $todo->getTitle(); ?>">
-										<?= $todo->getTitle(); ?>
+									<label class="card-title mb-0 pb-0 text-nowrap" for="<?= $todo->getTitle(); ?>">
+										#<?=$todo->getId()?> <?= $todo->getTitle(); ?>
 									</label>
 								</h5>
 

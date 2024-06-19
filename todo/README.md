@@ -1,5 +1,7 @@
 # Examen PHP 2023-2024 : Création d'une application de liste de tâches en PHP
 
+![](./assets/dashboard.png)
+
 ## Objectif
 Créer une application web en PHP permettant de gérer une liste de tâches (todo list) avec les fonctionnalités suivantes
 
