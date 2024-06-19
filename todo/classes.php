@@ -8,8 +8,9 @@ class Task
 	private DateTime $createdAt;
 	private DateTime $endDate;
 	private bool $done;
+	private bool $deleted;
 
-	public function __construct(int $id, string $title, string $description, bool $done=false, DateTime $createdAt=new DateTime(), DateTime $endDate=new DateTime())
+	public function __construct(int $id, string $title, string $description, bool $done=false, DateTime $createdAt=new DateTime(), DateTime $endDate=new DateTime(), bool $deleted=false)
 	{
 		$this->id = $id;
 		$this->title = $title;
@@ -17,6 +18,7 @@ class Task
 		$this->description = $description;
 		$this->createdAt = $createdAt;
 		$this->endDate = $endDate;
+		$this->deleted = $deleted;
 	}
 
 	public function getId(): int
@@ -52,5 +54,30 @@ class Task
 	public function setDone(bool $done): void
 	{
 		$this->done = $done;
+	}
+
+	public function isDeleted(): bool
+	{
+		return $this->deleted;
+	}
+
+	public function delete(): void
+	{
+		$this->deleted = true;
+	}
+
+	public function restore(): void
+	{
+		$this->deleted = false;
+	}
+
+	public function setTitle(string $title): void
+	{
+		$this->title = $title;
+	}
+
+	public function setDescription(string $description): void
+	{
+		$this->description = $description;
 	}
 }
