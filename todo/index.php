@@ -134,28 +134,38 @@ if ($showDeleted) {
 						$buttonCheck = $todo->isDone() ? 'btn btn-danger' : 'btn btn-success';
 						$buttonValue = $todo->isDone() ? '58' : 'f00c';
 						$priorityColor = null;
+						$cardBorder = null;
 						
 						switch ($todo->getPriority()) {
 							case Priority::Medium:
 								$priorityColor = 'orange';
+								$cardBorder = "warning";
 								break;
 							case Priority::High:
 								$priorityColor = 'red';
+								$cardBorder = "danger";
 								break;
 							case Priority::Low:
 							default:
 								$priorityColor = 'blue';
+								$cardBorder = "";
 								break;
 						}
 
 						$cardBackground = '';
-						if ($todo->isDone()) $cardBackground = 'text-bg-success';
-						if ($todo->isDeleted()) $cardBackground = 'text-bg-secondary';
+
+						if ($todo->isDone()) {
+							$cardBackground = 'text-bg-success';
+							$cardBorder = '';
+						} else if ($todo->isDeleted()) {
+							$cardBackground = 'text-bg-secondary';
+							$cardBorder = '';
+						}
 
 						$modificationDisabled = $todo->isDeleted() ? 'visually-hidden' : '';
 					?> 
 					<div class="col" id="card-<?=$todo->getId()?>">
-						<div class="card shadow w-200 h-100 <?=$cardBackground?>">
+						<div class="card shadow w-200 h-100 <?=$cardBackground?> border-<?=$cardBorder?>">
 							<div class="card-body">
 								<h5>
 									<label class="card-title mb-0 pb-0 text-nowrap" for="<?= $todo->getTitle(); ?>">
