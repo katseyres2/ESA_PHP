@@ -66,18 +66,21 @@ if ($showDeleted) {
 						</div>
 					</div>
 					<div class="row pt-3">
-						<div class="col">
+						<div class="col-md-auto">
 							<form action="./index.php" method="POST">
 								<input type="hidden" name="filterShowDeletedTasks" value="<?= $showDeleted ? '0' : '1' ?>">
-								<input type="submit" value="<?= $showDeleted ? 'Hide' : 'Show'?> deleted tasks" class="btn btn-primary" <?=count($deletedTodos) == 0 ? 'disabled' : ''?>>
+								<input style="width: 10em;" type="submit" value="<?= $showDeleted ? 'Hide' : 'Show'?> deleted tasks" class="btn btn-secondary" <?=count($deletedTodos) == 0 ? 'disabled' : ''?>>
+							</form>
+						</div>
+						<div class="col-md-auto">
+							<form action="./clear.php" method="GET">
+							<input style="width: 10em;" type="submit" value="Clear deleted tasks" class="btn btn-secondary">
 							</form>
 						</div>
 					</div>
 					<div class="row pt-3">
 						<div class="col">
-							<form action="./clear.php" method="GET">
-								<input type="submit" value="Clear deleted tasks" class="btn btn-primary">
-							</form>
+							<a style="width: 10em;" href="./todos.csv" class="btn btn-secondary">Download</a>
 						</div>
 					</div>
 					<div class="row pt-3 visually-hidden">
@@ -88,17 +91,31 @@ if ($showDeleted) {
 						</div>
 					</div>
 				</div>
-				<div class="col">
+				<div class="col container text-left">
 					<form action="./add.php" method="POST">
-						<div class="mb-3">
-							<label for="inputTitle" class="form-label">Title</label>
-							<input type="text" class="form-control" id="inputTitle" name="inputTitle">
+						<div class="row">
+							<div class="col">
+								<div class="mb-3">
+									<label for="inputTitle" class="form-label">Title</label>
+									<input type="text" class="form-control" id="inputTitle" name="inputTitle">
+								</div>
+								<div class="mb-3">
+									<label for="inputDescription" class="form-label">Description</label>
+									<input type="text" class="form-control" id="inputDescription" name="inputDescription">
+								</div>
+								<button type="submit" class="btn btn-primary">Create task</button>							
+							</div>
+							<div class="col-3">
+								<div class="mb-3">
+									<label for="inputPriority" class="form-label">Priority</label>
+									<select class="form-select" aria-label="Default select example" name="inputPriority">
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+									</select>
+								</div>
+							</div>
 						</div>
-						<div class="mb-3">
-							<label for="inputDescription" class="form-label">Description</label>
-							<input type="text" class="form-control" id="inputDescription" name="inputDescription">
-						</div>
-						<button type="submit" class="btn btn-primary">Create task</button>
 					</form>
 				</div>
 			</div>
@@ -116,6 +133,20 @@ if ($showDeleted) {
 						$createdAtTime = $todo->getCreatedAt()->format('H:i:s');
 						$buttonCheck = $todo->isDone() ? 'btn btn-danger' : 'btn btn-success';
 						$buttonValue = $todo->isDone() ? '58' : 'f00c';
+						$priorityColor = null;
+						
+						switch ($todo->getPriority()) {
+							case Priority::Medium:
+								$priorityColor = 'orange';
+								break;
+							case Priority::High:
+								$priorityColor = 'red';
+								break;
+							case Priority::Low:
+							default:
+								$priorityColor = 'blue';
+								break;
+						}
 
 						$cardBackground = '';
 						if ($todo->isDone()) $cardBackground = 'text-bg-success';
@@ -138,25 +169,36 @@ if ($showDeleted) {
 									<?= $todo->getDescription(); ?>
 								</div>
 							</div>
-							<div class="card-footer">
-								<div style="width:max-content">
-									<form action="./toggle.php" method="post" class="m-0 p-0 <?=$modificationDisabled?>" style="display:inline;width: 50px;">
-										<input type="hidden" name="id" value="<?=$todo->getId()?>">
-										<input type="hidden" name="check" value="<?=!$todo->isDone()?>">
-										<input class="<?=$buttonCheck?>" style="font-family: FontAwesome" value="&#x<?=$buttonValue?>;" type="submit">
-									</form>
-									<form action="./edit-form.php" method="post" style="display:inline;width: 50px;" class="<?=$modificationDisabled?>">
-										<input type="hidden" name="id" value="<?=$todo->getId()?>">
-										<input class="btn btn-secondary" style="font-family: FontAwesome" value="&#xf303;" type="submit">
-									</form>
-									<form action="./delete.php" method="post" style="display:inline;width: 50px;" class="<?=$modificationDisabled?>">
-										<input type="hidden" name="id" value="<?=$todo->getId()?>">
-										<input class="btn btn-secondary" style="font-family: FontAwesome" value="&#xf1f8;" type="submit">
-									</form>
-									<form action="./restore.php" method="post" class="<?php if (strlen($modificationDisabled) == 0) echo 'visually-hidden'?>">
-										<input type="hidden" name="id" value="<?=$todo->getId()?>">
-										<input class="btn btn-primary" style="font-family: FontAwesome" value="&#xf0e2;" type="submit">
-									</form>
+							<div class="card-footer" style="min-width: 15em;">
+								<div class="container m-0 p-0">
+									<div class="row justify-content-between">
+										<div class="col-md-auto">
+											<form action="./toggle.php" method="post" class="m-0 p-0 <?=$modificationDisabled?>" style="display:inline;width: 50px;">
+												<input type="hidden" name="id" value="<?=$todo->getId()?>">
+												<input type="hidden" name="check" value="<?=!$todo->isDone()?>">
+												<input class="<?=$buttonCheck?>" style="font-family: FontAwesome" value="&#x<?=$buttonValue?>;" type="submit">
+											</form>
+											<form action="./edit-form.php" method="post" style="display:inline;width: 50px;" class="<?=$modificationDisabled?>">
+												<input type="hidden" name="id" value="<?=$todo->getId()?>">
+												<input class="btn btn-secondary" style="font-family: FontAwesome" value="&#xf303;" type="submit">
+											</form>
+											<form action="./delete.php" method="post" style="display:inline;width: 50px;" class="<?=$modificationDisabled?>">
+												<input type="hidden" name="id" value="<?=$todo->getId()?>">
+												<input class="btn btn-secondary" style="font-family: FontAwesome" value="&#xf1f8;" type="submit">
+											</form>
+											<form action="./restore.php" method="post" class="<?php if (strlen($modificationDisabled) == 0) echo 'visually-hidden'?>">
+												<input type="hidden" name="id" value="<?=$todo->getId()?>">
+												<input class="btn btn-primary" style="font-family: FontAwesome" value="&#xf0e2;" type="submit">
+											</form>
+										</div>
+										<div class="col-md-auto">
+											<form action="./priority.php" method="post" style="display:inline;width: 50px;" class="<?=$modificationDisabled?>">
+												<input type="hidden" name="id" value="<?=$todo->getId()?>">
+												<input type="hidden" name="currentPriority" value="<?=$todo->getPriority()->value?>">
+												<input class="btn btn-secondary" style="font-family: FontAwesome; color: <?=$priorityColor?>; background-color: white" value="&#xf024;" type="submit">
+											</form>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>

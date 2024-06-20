@@ -16,6 +16,22 @@ function getTodos(): array
 			continue;
 		}
 
+		$priority = null;
+		switch ($data[7]) {
+			case '2':
+				$priority = Priority::Medium;
+				break;
+			case '3':
+				$priority = Priority::High;
+				break;
+			case '1':
+				$priority = Priority::Low;
+				break;
+			default:
+				$priority = Priority::None;
+				break;
+		}
+
 		$todos[] = new Task(
 			intval($data[0]),
 			$data[1],
@@ -24,6 +40,7 @@ function getTodos(): array
 			DateTime::createFromFormat('Y-m-d H:i:s', $data[3]),
 			DateTime::createFromFormat('Y-m-d H:i:s', $data[4]),
 			$data[6] == '1',
+			$priority,
 		);
 	}
 
@@ -36,7 +53,7 @@ function getTodos(): array
 function saveTodos(array $todos): void
 {
 	$stream = fopen('./todos.csv', 'w');
-	$headers = ["Id", "Title", "Description", "CreatedAt", "EndDate", "Done", "Deleted"];
+	$headers = ["Id", "Title", "Description", "CreatedAt", "EndDate", "Done", "Deleted", "Priority"];
 	fputcsv($stream, $headers, ";");
 
 	foreach ($todos as $todo) {
@@ -48,6 +65,7 @@ function saveTodos(array $todos): void
 			$todo->getEndDate()->format('Y-m-d H:i:s'),
 			$todo->isDone() ? '1' :  '0',
 			$todo->isDeleted() ? '1' : '0',
+			$todo->getPriority()->value,
 		];
 
 		fputcsv($stream, $row, ';');
@@ -63,10 +81,26 @@ function redirectToIndex(): void
 	}
 }
 
-function createTask(string $title, string $description): void
+function createTask(string $title, string $description, int $priorityLevel): void
 {
 	$todos = getTodos();
 	$lastID = 1;
+	$priority = Priority::Low;
+
+	switch ($priorityLevel) {
+		case '2':
+			$priority = Priority::Medium;
+			break;
+		case '3':
+			$priority = Priority::High;
+			break;
+		case '1':
+			$priority = Priority::Low;
+			break;
+		default:
+			$priority = Priority::None;
+			break;
+	}
 
 	foreach ($todos as $todo) {
 		if ($todo->getId() > $lastID) {
@@ -74,7 +108,7 @@ function createTask(string $title, string $description): void
 		}
 	}
 
-	$todos[] = new Task($lastID + 1, $title, $description);
+	$todos[] = new Task($lastID + 1, $title, $description, false, new DateTime(), new DateTime(), false, $priority);
 	saveTodos($todos);
 }
 
@@ -164,4 +198,18 @@ function clearDeletedTasks(): void
 function purgeAllTasks(): void
 {
 	saveTodos([]);
+}
+
+function togglePriority(int $id): void
+{
+	$tasks = getTodos();
+
+	foreach ($tasks as &$task) {
+		if ($task->getId() == $id) {
+			$task->nextPriority();
+			break;
+		}
+	}
+
+	saveTodos($tasks);
 }

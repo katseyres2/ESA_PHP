@@ -1,5 +1,13 @@
 <?php
 
+enum Priority: string
+{
+	case None = "0";
+	case Low = "1";
+	case Medium = "2";
+	case High = "3";
+}
+
 class Task
 {
 	private int $id;
@@ -9,8 +17,9 @@ class Task
 	private DateTime $endDate;
 	private bool $done;
 	private bool $deleted;
+	private Priority $priority;
 
-	public function __construct(int $id, string $title, string $description, bool $done=false, DateTime $createdAt=new DateTime(), DateTime $endDate=new DateTime(), bool $deleted=false)
+	public function __construct(int $id, string $title, string $description, bool $done=false, DateTime $createdAt=new DateTime(), DateTime $endDate=new DateTime(), bool $deleted=false, Priority $priority=Priority::Low)
 	{
 		$this->id = $id;
 		$this->title = $title;
@@ -19,6 +28,7 @@ class Task
 		$this->createdAt = $createdAt;
 		$this->endDate = $endDate;
 		$this->deleted = $deleted;
+		$this->priority = $priority;
 	}
 
 	public function getId(): int
@@ -79,5 +89,33 @@ class Task
 	public function setDescription(string $description): void
 	{
 		$this->description = $description;
+	}
+
+	public function getPriority(): Priority
+	{
+		return $this->priority;
+	}
+
+	public function setPriority(Priority $priority): void
+	{
+		$this->priority = $priority;
+	}
+
+	public function nextPriority(): void
+	{
+		switch ($this->priority) {
+			case Priority::Low:
+				$this->priority = Priority::Medium;
+				break;
+			case Priority::Medium:
+				$this->priority = Priority::High;
+				break;
+			case Priority::High:
+				$this->priority = Priority::Low;
+				break;
+			default:
+				$this->priority = Priority::Low;
+				break;
+		}
 	}
 }

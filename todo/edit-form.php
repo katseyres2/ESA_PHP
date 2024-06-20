@@ -32,6 +32,7 @@ if (!$task) redirectToIndex();
 					<input type="text" class="form-control" id="inputDescription" name="inputDescription" value="<?=$task->getDescription()?>">
 				</div>
 				<button type="submit" class="btn btn-primary">Edit</button>
+				<a href="./index.php" class="btn btn-primary">Cancel</a>
 			</form>
 		</div>
 	</div>
