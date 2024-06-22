@@ -29,16 +29,25 @@ if (isset($_POST['filterShowDeletedTasks'])) {
 $todos = getTodos();
 $displayedTodos = [];
 $deletedTodos = [];
-$doneTasks = 0;
+$doneTasksCounter = 0;
 
 foreach ($todos as $td) {
 	if ($td->isDeleted()) $deletedTodos[] = $td;
 	else $displayedTodos[] = $td;
 
-	if ($td->isDone()) $doneTasks++;
+	if ($td->isDone()) $doneTasksCounter++;
 }
 
-$activeTasks = count($displayedTodos);
+$activeTasksCounter = count($displayedTodos);
+$activeTasks = [];
+$doneTasks = [];
+
+foreach ($displayedTodos as $task) {
+	if ($task->isDone()) $doneTasks[] = $task;
+	else $activeTasks[] = $task;
+}
+
+$displayedTodos = array_merge($activeTasks, $doneTasks);
 
 if ($showDeleted) {
 	$displayedTodos = array_merge($displayedTodos, $deletedTodos);
@@ -60,9 +69,9 @@ if ($showDeleted) {
 							Checked tasks<br>
 						</div>
 						<div class="col">
-							<?=$activeTasks?><br>
+							<?=$activeTasksCounter?><br>
 							<?=count($deletedTodos)?><br>
-							<?=$doneTasks?><br>
+							<?=$doneTasksCounter?><br>
 						</div>
 					</div>
 					<div class="row pt-3">
@@ -163,12 +172,13 @@ if ($showDeleted) {
 						}
 
 						$modificationDisabled = $todo->isDeleted() ? 'visually-hidden' : '';
+						$taskDoneTextDecoration = $todo->isDone() ? 'text-decoration-line-through' : '';
 					?> 
 					<div class="col" id="card-<?=$todo->getId()?>">
 						<div class="card shadow w-200 h-100 <?=$cardBackground?> border-<?=$cardBorder?>">
 							<div class="card-body">
 								<h5>
-									<label class="card-title mb-0 pb-0 text-nowrap" for="<?= $todo->getTitle(); ?>">
+									<label class="card-title mb-0 pb-0 text-nowrap <?=$taskDoneTextDecoration?>" for="<?= $todo->getTitle(); ?>">
 										#<?=$todo->getId()?> <?= $todo->getTitle(); ?>
 									</label>
 								</h5>
